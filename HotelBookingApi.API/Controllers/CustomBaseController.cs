@@ -12,7 +12,7 @@ namespace HotelBookingApi.API.Controllers
         {
             if (response.StatusCode == 204)
             {
-                return new ObjectResult(null) { StatusCode = response.StatusCode };
+                return new NoContentResult(); // Standard 204 No Content
             }
 
             return new ObjectResult(response) { StatusCode = response.StatusCode };

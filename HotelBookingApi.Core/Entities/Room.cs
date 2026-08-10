@@ -1,6 +1,6 @@
 ﻿namespace HotelBookingApi.Core.Entities
 {
-    public class Room
+    public class Room : BaseEntity
     {
         public int Id { get; set; }
         public int HotelId { get; set; }

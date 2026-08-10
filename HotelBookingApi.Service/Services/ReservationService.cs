@@ -50,5 +50,30 @@ namespace HotelBookingApi.Service.Services
             var responseDto = _mapper.Map<ReservationDto>(reservation);
             return CustomResponseDto<ReservationDto>.Success(201, responseDto);
         }
+
+        public async Task<CustomResponseDto<NoContentDto>> CancelReservationAsync(int id)
+        {
+            // Global filtreyi geçici olarak devre dışı bırakıp kaydı arıyoruz
+            var reservation = await _context.Reservations
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            // 1. Kayıt veritabanında hiç yoksa
+            if (reservation == null)
+            {
+                return CustomResponseDto<NoContentDto>.Fail(404, $"{id} numaralı rezervasyon veritabanında bulunamadı.");
+            }
+
+            // 2. Kayıt var ama zaten soft delete yapılmışsa
+            if (reservation.IsDeleted)
+            {
+                return CustomResponseDto<NoContentDto>.Fail(400, $"{id} numaralı rezervasyon zaten iptal edilmiş.");
+            }
+
+            _context.Reservations.Remove(reservation);
+            await _context.SaveChangesAsync();
+
+            return CustomResponseDto<NoContentDto>.Success(204);
+        }
     }
 }

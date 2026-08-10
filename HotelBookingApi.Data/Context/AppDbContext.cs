@@ -10,16 +10,36 @@ namespace HotelBookingApi.Data.Context
         {
         }
 
-        public DbSet<Hotel> Hotels => Set<Hotel>();
-        public DbSet<Room> Rooms => Set<Room>();
-        public DbSet<Reservation> Reservations => Set<Reservation>();
+        public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Data katmanındaki tüm IEntityTypeConfiguration sınıflarını otomatik uygular
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+            // Global Query Filters (Silinmiş verileri varsayılan olarak sorgulardan ele)
+            modelBuilder.Entity<Hotel>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Room>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Reservation>().HasQueryFilter(x => !x.IsDeleted);
+
             base.OnModelCreating(modelBuilder);
+        }
+
+        // Soft Delete Interceptor / Override
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            {
+                if (entry.State == EntityState.Deleted)
+                {
+                    // Fiziksel silmeyi iptal et, güncellemeye çevir ve IsDeleted flag'ini işaretle
+                    entry.State = EntityState.Modified;
+                    entry.Entity.IsDeleted = true;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -20,5 +20,13 @@ namespace HotelBookingApi.API.Controllers
             var result = await _reservationService.CreateReservationAsync(dto);
             return CreateActionResult(result);
         }
+
+        // DELETE: api/reservations/1
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CancelReservation(int id)
+        {
+            var result = await _reservationService.CancelReservationAsync(id);
+            return CreateActionResult(result);
+        }
     }
 }

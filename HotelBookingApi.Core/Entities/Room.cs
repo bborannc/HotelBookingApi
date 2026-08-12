@@ -2,7 +2,6 @@
 {
     public class Room : BaseEntity
     {
-        public int Id { get; set; }
         public int HotelId { get; set; }
         public string RoomNumber { get; set; } = string.Empty;
         public string RoomType { get; set; } = string.Empty; // Single, Double, Suite

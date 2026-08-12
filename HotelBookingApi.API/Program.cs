@@ -21,7 +21,7 @@ builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 // FluentValidation Entegrasyonu
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<ReservationCreateDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<AppDbContext>();
 
 // Business Services (DI Kaydı)
 builder.Services.AddScoped<RoomService>();

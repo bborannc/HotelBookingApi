@@ -2,7 +2,6 @@
 {
     public class Reservation : BaseEntity
     {
-        public int Id { get; set; }
         public int RoomId { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public DateTime CheckInDate { get; set; }
